@@ -16,7 +16,7 @@ pipeline {
 				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-credential-udacity-devops-final', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
 					sh '''
 						echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-						docker build -t bacnguyen/udacity-capstone-docker-blue ./docker/blue/
+						docker build -t bacnguyen1005/udacity-capstone-docker-blue ./docker/blue/
 					'''
 				}
 			}
@@ -27,7 +27,7 @@ pipeline {
 				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-credential-udacity-devops-final', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
 					sh '''
 						docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-						docker push bacnguyen/udacity-capstone-docker-blue
+						docker push bacnguyen1005/udacity-capstone-docker-blue
 					'''
 				}
 			}
@@ -37,7 +37,7 @@ pipeline {
 			steps {
 				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-credential-udacity-devops-final', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
 					sh '''
-						docker build -t bacnguyen/udacity-capstone-docker-green ./docker/green/
+						docker build -t bacnguyen1005/udacity-capstone-docker-green ./docker/green/
 					'''
 				}
 			}
@@ -48,7 +48,7 @@ pipeline {
 				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-credential-udacity-devops-final', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
 					sh '''
 						docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-						docker push bacnguyen/udacity-capstone-docker-green
+						docker push bacnguyen1005/udacity-capstone-docker-green
 					'''
 				}
 			}

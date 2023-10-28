@@ -59,6 +59,7 @@ pipeline {
 				withAWS(region:'us-east-1', credentials:'aws-credential-udacity-devops-final') {
                     withEnv(["KUBECONFIG=$HOME/.kube/kubeconfig"]) {
                     sh '''
+						aws eks --region us-east-1 update-kubeconfig --name udacitycluster
 						kubectl config use-context arn:aws:eks:us-east-1:490204598655:cluster/udacitycluster
 					'''
                     }	

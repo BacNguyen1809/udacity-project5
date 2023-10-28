@@ -161,7 +161,7 @@ Resources:
             SecurityGroups:
                 - Ref: JenkinsServerSecurityGroup
             InstanceType: !Ref InstanceType
-            KeyName: BacNguyen
+            KeyName: udacity
 
     ## Auto Scaling Group 
     JenkinsGroup:

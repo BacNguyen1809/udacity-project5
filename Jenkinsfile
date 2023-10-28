@@ -1,7 +1,7 @@
 pipeline {
 	agent any
 	environment {
-       KUBECONFIG='~/.kube/kubeconfig'                               //can be used in whole pipeline
+       KUBECONFIG='~/.kube/kubeconfig'                            
    }
 	stages {
 
@@ -13,9 +13,10 @@ pipeline {
 		
 		stage('Build Docker Image blue') {
 			steps {
-				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'udacity-docker-hub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
+				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-credential-udacity-devops-final', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
 					sh '''
-						docker build -t bacnguyen/udacity-capstone-docker-blue ./docker/blue/
+						echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+						docker build -t bacnguyen1005/udacity-capstone-docker-blue ./docker/blue/
 					'''
 				}
 			}
@@ -23,10 +24,10 @@ pipeline {
 
 		stage('Push Image To Dockerhub blue') {
 			steps {
-				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'udacity-docker-hub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
+				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-credential-udacity-devops-final', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
 					sh '''
 						docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-						docker push bacnguyen/udacity-capstone-docker-blue
+						docker push bacnguyen1005/udacity-capstone-docker-blue
 					'''
 				}
 			}
@@ -34,9 +35,9 @@ pipeline {
 
 		stage('Build Docker Image green') {
 			steps {
-				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'udacity-docker-hub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
+				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-credential-udacity-devops-final', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
 					sh '''
-						docker build -t bacnguyen/udacity-capstone-docker-green ./docker/green/
+						docker build -t bacnguyen1005/udacity-capstone-docker-green ./docker/green/
 					'''
 				}
 			}
@@ -44,10 +45,10 @@ pipeline {
 
 		stage('Push Image To Dockerhub green') {
 			steps {
-				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'udacity-docker-hub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
+				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-credential-udacity-devops-final', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
 					sh '''
 						docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-						docker push bacnguyen/udacity-capstone-docker-green
+						docker push bacnguyen1005/udacity-capstone-docker-green
 					'''
 				}
 			}
@@ -55,11 +56,11 @@ pipeline {
 
 		stage('Set Current kubectl Context') {
 			steps {
-				withAWS(region:'us-east-1', credentials:'udacity-capstone') {
+				withAWS(region:'us-east-1', credentials:'aws-credential-udacity-devops-final') {
                     withEnv(["KUBECONFIG=$HOME/.kube/kubeconfig"]) {
-                    // Your stuff here
                     sh '''
-						kubectl config use-context arn:aws:eks:us-east-1:125745568001:cluster/udacitycluster
+						aws eks --region us-east-1 update-kubeconfig --name udacitycluster
+						kubectl config use-context arn:aws:eks:us-east-1:490204598655:cluster/udacitycluster
 					'''
                     }	
 				}
@@ -68,9 +69,8 @@ pipeline {
 
 		stage('Deploy Blue Container') {
 			steps {
-				withAWS(region:'us-east-1', credentials:'udacity-capstone') {
+				withAWS(region:'us-east-1', credentials:'aws-credential-udacity-devops-final') {
                     withEnv(["KUBECONFIG=$HOME/.kube/kubeconfig"]) {
-                    // Your stuff here
                     sh '''
 						kubectl apply -f ./kubernetes-resources/blue-replication-controller.yml 
 					'''
@@ -81,7 +81,7 @@ pipeline {
 
 		stage('Deploy green container') {
 			steps {
-				withAWS(region:'us-east-1', credentials:'udacity-capstone') {
+				withAWS(region:'us-east-1', credentials:'aws-credential-udacity-devops-final') {
                     withEnv(["KUBECONFIG=$HOME/.kube/kubeconfig"]) { 
 					sh '''
 						kubectl apply -f ./kubernetes-resources/green-replication-controller.yml 
@@ -93,7 +93,7 @@ pipeline {
 
 		stage('Create Service Pointing to Blue Replication Controller') {
 			steps {
-				withAWS(region:'us-east-1', credentials:'udacity-capstone') {
+				withAWS(region:'us-east-1', credentials:'aws-credential-udacity-devops-final') {
                     withEnv(["KUBECONFIG=$HOME/.kube/kubeconfig"]) {
 					sh '''
 						kubectl apply -f ./kubernetes-resources/blue-service.yml 
@@ -111,7 +111,7 @@ pipeline {
 
 		stage('Create Service Pointing to Green Replication Controller') {
 			steps {
-				withAWS(region:'us-east-1', credentials:'udacity-capstone') {
+				withAWS(region:'us-east-1', credentials:'aws-credential-udacity-devops-final') {
 					withEnv(["KUBECONFIG=$HOME/.kube/kubeconfig"]) {
                     sh '''
 						kubectl apply -f ./kubernetes-resources/green-service.yml 

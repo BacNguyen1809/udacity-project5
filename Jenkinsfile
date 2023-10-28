@@ -15,7 +15,7 @@ pipeline {
 			steps {
 				withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-credential-udacity-devops-final', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
 					sh '''
-						docker build -t bacnguyen/udacity-capstone-docker-blue ./docker/blue/
+						sudo docker build -t bacnguyen/udacity-capstone-docker-blue ./docker/blue/
 					'''
 				}
 			}

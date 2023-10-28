@@ -16,7 +16,7 @@ spec:
         spec:
             containers:
                 - name: blue
-                  image: bacnguyen/udacity-capstone-docker-blue
+                  image: bacnguyen1005/udacity-capstone-docker-blue
                   ports:
                       - name: http-server
                         containerPort: 80

@@ -4,8 +4,6 @@ This is final project of Udacity Cloud DevOps Engineer Nanodegree Program.
 
 ## Project Overview
 
-In this project I have implemented all the knowledge that I have learnt from the Udacity Cloud DevOps Engineer Nanodegree program. In this project I have
-
 1.  Created Jenkins server using the AWS CloudFormation.
 2.  Installed all the needed tools in Jenkins master server using the Launch Configuration.
 3.  Creates one EKS cluster in AWS.
